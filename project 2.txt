@@ -1,0 +1,817 @@
+[root@localhost ~]# pvcreate /dev/nvme0n2,/dev/nvme0n2
+  No device found for /dev/nvme0n2,/dev/nvme0n2.
+[root@localhost ~]# pvcreate /dev/nvme0n2
+  Physical volume "/dev/nvme0n2" successfully created.
+  Creating devices file /etc/lvm/devices/system.devices
+[root@localhost ~]# pvs
+  PV           VG Fmt  Attr PSize  PFree 
+  /dev/nvme0n2    lvm2 ---  15.00g 15.00g
+[root@localhost ~]# vgcreate ims /dev/nvme0n2
+  Volume group "ims" successfully created
+[root@localhost ~]# lvcreate -n database -L 5G ims
+  Logical volume "database" created.
+[root@localhost ~]# lvcreate -n application -L 5G ims
+  Logical volume "application" created.
+[root@localhost ~]# lvcreate -n project -L 2G ims
+  Logical volume "project" created.
+[root@localhost ~]# ls /dev/mapper/ims-database
+/dev/mapper/ims-database
+[root@localhost ~]# ls /dev/mapper/ims-application
+/dev/mapper/ims-application
+[root@localhost ~]# ls /dev/mapper/ims-project
+/dev/mapper/ims-project
+[root@localhost ~]# vgs
+  VG  #PV #LV #SN Attr   VSize   VFree 
+  ims   1   3   0 wz--n- <15.00g <3.00g
+[root@localhost ~]# pvs
+  PV           VG  Fmt  Attr PSize   PFree 
+  /dev/nvme0n2 ims lvm2 a--  <15.00g <3.00g
+[root@localhost ~]# mkfs.xfs /dev/mapper/ims-database
+meta-data=/dev/mapper/ims-database isize=512    agcount=4, agsize=327680 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=1        finobt=1, sparse=1, rmapbt=0
+         =                       reflink=1    bigtime=1 inobtcount=1 nrext64=0
+data     =                       bsize=4096   blocks=1310720, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0, ftype=1
+log      =internal log           bsize=4096   blocks=16384, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+[root@localhost ~]# mount /dev/mapper/ims-database /mnt
+[root@localhost ~]# mount /dev/mapper/ims-application /mnt
+mount: /mnt: wrong fs type, bad option, bad superblock on /dev/mapper/ims-application, missing codepage or helper program, or other error.
+[root@localhost ~]# mount /dev/mapper/ims-application /mnt
+mount: /mnt: wrong fs type, bad option, bad superblock on /dev/mapper/ims-application, missing codepage or helper program, or other error.
+[root@localhost ~]# unmount /dev/mapper/ims-database /mnt
+bash: unmount: command not found...
+[root@localhost ~]# unmount /dev/ims-database /mnt
+bash: unmount: command not found...
+[root@localhost ~]# unmount database /mnt
+bash: unmount: command not found...
+[root@localhost ~]# unmount /mnt
+bash: unmount: command not found...
+[root@localhost ~]# umount /dev/
+/dev/hugepages            /dev/nvme0n1p1            /dev/shm
+/dev/mapper/ims-database  /dev/nvme0n1p3            /dev/sr0
+/dev/mqueue               /dev/pts                  
+[root@localhost ~]# umount /dev/
+/dev/hugepages            /dev/nvme0n1p1            /dev/shm
+/dev/mapper/ims-database  /dev/nvme0n1p3            /dev/sr0
+/dev/mqueue               /dev/pts                  
+[root@localhost ~]# umount /dev/mapper/ims-database 
+[root@localhost ~]# mkdir /database
+[root@localhost ~]# mkdir /application
+[root@localhost ~]# mkdir /project
+[root@localhost ~]# mount /dev/mapper/ims-database /database
+[root@localhost ~]# mount /dev/mapper/ims-application /application
+mount: /application: wrong fs type, bad option, bad superblock on /dev/mapper/ims-application, missing codepage or helper program, or other error.
+[root@localhost ~]# mount /dev/mapper/ims-project /project
+mount: /project: wrong fs type, bad option, bad superblock on /dev/mapper/ims-project, missing codepage or helper program, or other error.
+[root@localhost ~]# mkdir /Application
+[root@localhost ~]# mkdir /Project
+[root@localhost ~]# mount /dev/mapper/ims-application /Application
+mount: /Application: wrong fs type, bad option, bad superblock on /dev/mapper/ims-application, missing codepage or helper program, or other error.
+[root@localhost ~]# rmdir Application
+rmdir: failed to remove 'Application': No such file or directory
+[root@localhost ~]# rmkdir Application
+bash: rmkdir: command not found...
+Similar command is: 'mkdir'
+[root@localhost ~]# rm-rf Application
+bash: rm-rf: command not found...
+[root@localhost ~]# rmdir Application
+rmdir: failed to remove 'Application': No such file or directory
+[root@localhost ~]# rmdir /Application
+[root@localhost ~]# rmdir /Project
+[root@localhost ~]# mkfs.xfs /dev/mapper/ims-application
+meta-data=/dev/mapper/ims-application isize=512    agcount=4, agsize=327680 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=1        finobt=1, sparse=1, rmapbt=0
+         =                       reflink=1    bigtime=1 inobtcount=1 nrext64=0
+data     =                       bsize=4096   blocks=1310720, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0, ftype=1
+log      =internal log           bsize=4096   blocks=16384, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+[root@localhost ~]# mkfs.xfs /dev/mapper/ims-project
+meta-data=/dev/mapper/ims-project isize=512    agcount=4, agsize=131072 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=1        finobt=1, sparse=1, rmapbt=0
+         =                       reflink=1    bigtime=1 inobtcount=1 nrext64=0
+data     =                       bsize=4096   blocks=524288, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0, ftype=1
+log      =internal log           bsize=4096   blocks=16384, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+[root@localhost ~]# mount /dev/mapper/ims-application /application
+[root@localhost ~]# mount /dev/mapper/ims-project /project
+[root@localhost ~]# lsblk
+NAME              MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
+sr0                11:0    1  9.1G  0 rom  /run/media/vk/CentOS-Stream-9-BaseOS-x86_64
+nvme0n1           259:0    0   25G  0 disk 
+├─nvme0n1p1       259:1    0    1G  0 part /boot
+├─nvme0n1p2       259:2    0    4G  0 part [SWAP]
+└─nvme0n1p3       259:3    0   20G  0 part /
+nvme0n2           259:4    0   15G  0 disk 
+├─ims-database    253:0    0    5G  0 lvm  /database
+├─ims-application 253:1    0    5G  0 lvm  /application
+└─ims-project     253:2    0    2G  0 lvm  /project
+[root@localhost ~]# 
+[root@localhost ~]# useradd vk1
+[root@localhost ~]# useradd vk2
+[root@localhost ~]# useradd vk3
+[root@localhost ~]# vim /etc/login.defs
+[root@localhost ~]# umask
+0337
+[root@localhost ~]# su vk1
+[vk1@localhost root]$ umask
+0027
+[vk1@localhost root]$ 
+exit
+[root@localhost ~]# groupadd databasegrp
+[root@localhost ~]# useradd mv1
+[root@localhost ~]# useradd mv2
+[root@localhost ~]# useradd mv3
+[root@localhost ~]# usermod -aG mv1 databasegrp
+usermod: user 'databasegrp' does not exist
+[root@localhost ~]# usermod -aG databasegrp mv1
+[root@localhost ~]# usermod -aG databasegrp mv2
+[root@localhost ~]# usermod -aG databasegrp mv3
+[root@localhost ~]# tail -25 /etc/group
+dev:x:35018:
+linux:x:35019:
+windows:x:35020:
+test_team:x:35021:
+apache:x:48:
+rpc:x:32:
+rpcuser:x:29:
+ADMIN:x:35022:harry,natasha,sarah
+harry:x:9056:
+natasha:x:9057:
+sarah:x:9058:
+alies:x:1326:
+manager:x:35023:Harry,Natasha
+Natasha:x:9059:
+Harry:x:9060:
+Sarah:x:9061:
+gold:x:9062:
+ben:x:9063:
+vk1:x:9064:
+vk2:x:9065:
+vk3:x:9066:
+databasegrp:x:35024:mv1,mv2,mv3
+mv1:x:9067:
+mv2:x:9068:
+mv3:x:9069:
+[root@localhost ~]# chage -l
+Usage: chage [options] LOGIN
+
+Options:
+  -d, --lastday LAST_DAY        set date of last password change to LAST_DAY
+  -E, --expiredate EXPIRE_DATE  set account expiration date to EXPIRE_DATE
+  -h, --help                    display this help message and exit
+  -i, --iso8601                 use YYYY-MM-DD when printing dates
+  -I, --inactive INACTIVE       set password inactive after expiration
+                                to INACTIVE
+  -l, --list                    show account aging information
+  -m, --mindays MIN_DAYS        set minimum number of days before password
+                                change to MIN_DAYS
+  -M, --maxdays MAX_DAYS        set maximum number of days before password
+                                change to MAX_DAYS
+  -R, --root CHROOT_DIR         directory to chroot into
+  -W, --warndays WARN_DAYS      set expiration warning days to WARN_DAYS
+
+[root@localhost ~]# userdel mv1
+[root@localhost ~]# userdel mv2
+[root@localhost ~]# userdel mv3
+[root@localhost ~]# tail -25 /etc/group
+Mervin:x:9055:
+prod:x:35016:
+test:x:35017:
+dev:x:35018:
+linux:x:35019:
+windows:x:35020:
+test_team:x:35021:
+apache:x:48:
+rpc:x:32:
+rpcuser:x:29:
+ADMIN:x:35022:harry,natasha,sarah
+harry:x:9056:
+natasha:x:9057:
+sarah:x:9058:
+alies:x:1326:
+manager:x:35023:Harry,Natasha
+Natasha:x:9059:
+Harry:x:9060:
+Sarah:x:9061:
+gold:x:9062:
+ben:x:9063:
+vk1:x:9064:
+vk2:x:9065:
+vk3:x:9066:
+databasegrp:x:35024:
+[root@localhost ~]# useradd dbadmin1
+[root@localhost ~]# useradd dbadmin2
+[root@localhost ~]# useradd dbadmin3
+[root@localhost ~]# usermod -aG databasegrp dbadmin1
+[root@localhost ~]# usermod -aG databasegrp dbadmin2
+[root@localhost ~]# usermod -aG databasegrp dbadmin3
+[root@localhost ~]# tail -25 /etc/group
+dev:x:35018:
+linux:x:35019:
+windows:x:35020:
+test_team:x:35021:
+apache:x:48:
+rpc:x:32:
+rpcuser:x:29:
+ADMIN:x:35022:harry,natasha,sarah
+harry:x:9056:
+natasha:x:9057:
+sarah:x:9058:
+alies:x:1326:
+manager:x:35023:Harry,Natasha
+Natasha:x:9059:
+Harry:x:9060:
+Sarah:x:9061:
+gold:x:9062:
+ben:x:9063:
+vk1:x:9064:
+vk2:x:9065:
+vk3:x:9066:
+databasegrp:x:35024:dbadmin1,dbadmin2,dbadmin3
+dbadmin1:x:9067:
+dbadmin2:x:9068:
+dbadmin3:x:9069:
+[root@localhost ~]# chage -E 2024-08-31
+Usage: chage [options] LOGIN
+
+Options:
+  -d, --lastday LAST_DAY        set date of last password change to LAST_DAY
+  -E, --expiredate EXPIRE_DATE  set account expiration date to EXPIRE_DATE
+  -h, --help                    display this help message and exit
+  -i, --iso8601                 use YYYY-MM-DD when printing dates
+  -I, --inactive INACTIVE       set password inactive after expiration
+                                to INACTIVE
+  -l, --list                    show account aging information
+  -m, --mindays MIN_DAYS        set minimum number of days before password
+                                change to MIN_DAYS
+  -M, --maxdays MAX_DAYS        set maximum number of days before password
+                                change to MAX_DAYS
+  -R, --root CHROOT_DIR         directory to chroot into
+  -W, --warndays WARN_DAYS      set expiration warning days to WARN_DAYS
+
+[root@localhost ~]# chage -E 2024-08-31 dbadmin1
+[root@localhost ~]# chage -M 30 dbadmin1
+[root@localhost ~]# chage -l dbadmin1
+Last password change					: May 09, 2024
+Password expires					: Jun 08, 2024
+Password inactive					: never
+Account expires						: Aug 31, 2024
+Minimum number of days between password change		: 0
+Maximum number of days between password change		: 30
+Number of days of warning before password expires	: 7
+[root@localhost ~]# chage -M 30 dbadmin2
+[root@localhost ~]# chage -E 2024-08-31 dbadmin2
+[root@localhost ~]# chage -l dbadmin2
+Last password change					: May 09, 2024
+Password expires					: Jun 08, 2024
+Password inactive					: never
+Account expires						: Aug 31, 2024
+Minimum number of days between password change		: 0
+Maximum number of days between password change		: 30
+Number of days of warning before password expires	: 7
+[root@localhost ~]# chage -E 2024-08-31 dbadmin3
+[root@localhost ~]# chage -M 30 dbadmin3
+[root@localhost ~]# chage -l dbadmin3
+Last password change					: May 09, 2024
+Password expires					: Jun 08, 2024
+Password inactive					: never
+Account expires						: Aug 31, 2024
+Minimum number of days between password change		: 0
+Maximum number of days between password change		: 30
+Number of days of warning before password expires	: 7
+[root@localhost ~]# groupadd applicationgrp
+[root@localhost ~]# useradd appadmin1
+[root@localhost ~]# useradd appadmin2
+[root@localhost ~]# useradd appadmin3
+[root@localhost ~]# usermod -aG applicationgrp appadmin1
+[root@localhost ~]# usermod -aG applicationgrp appadmin2
+[root@localhost ~]# usermod -aG applicationgrp appadmin3
+[root@localhost ~]# tail -25 /etc/group
+apache:x:48:
+rpc:x:32:
+rpcuser:x:29:
+ADMIN:x:35022:harry,natasha,sarah
+harry:x:9056:
+natasha:x:9057:
+sarah:x:9058:
+alies:x:1326:
+manager:x:35023:Harry,Natasha
+Natasha:x:9059:
+Harry:x:9060:
+Sarah:x:9061:
+gold:x:9062:
+ben:x:9063:
+vk1:x:9064:
+vk2:x:9065:
+vk3:x:9066:
+databasegrp:x:35024:dbadmin1,dbadmin2,dbadmin3
+dbadmin1:x:9067:
+dbadmin2:x:9068:
+dbadmin3:x:9069:
+applicationgrp:x:35025:appadmin1,appadmin2,appadmin3
+appadmin1:x:9070:
+appadmin2:x:9071:
+appadmin3:x:9072:
+[root@localhost ~]# chage -l appadmin1
+Last password change					: May 09, 2024
+Password expires					: May 29, 2024
+Password inactive					: never
+Account expires						: never
+Minimum number of days between password change		: 0
+Maximum number of days between password change		: 20
+Number of days of warning before password expires	: 7
+[root@localhost ~]# chage -E 2024-10-31 appadmin1
+[root@localhost ~]# chage -E 2024-08-31 appadmin2
+[root@localhost ~]# chage -E 2024-08-31 appadmin3
+[root@localhost ~]# chage -M 31 appadmin1
+[root@localhost ~]# chage -M 31 appadmin2
+[root@localhost ~]# chage -M 31 appadmin3
+[root@localhost ~]# chage -l appadmin1
+Last password change					: May 09, 2024
+Password expires					: Jun 09, 2024
+Password inactive					: never
+Account expires						: Oct 31, 2024
+Minimum number of days between password change		: 0
+Maximum number of days between password change		: 31
+Number of days of warning before password expires	: 7
+[root@localhost ~]# chage -l appadmin2
+Last password change					: May 09, 2024
+Password expires					: Jun 09, 2024
+Password inactive					: never
+Account expires						: Aug 31, 2024
+Minimum number of days between password change		: 0
+Maximum number of days between password change		: 31
+Number of days of warning before password expires	: 7
+[root@localhost ~]# chage -l appadmin3
+Last password change					: May 09, 2024
+Password expires					: Jun 09, 2024
+Password inactive					: never
+Account expires						: Aug 31, 2024
+Minimum number of days between password change		: 0
+Maximum number of days between password change		: 31
+Number of days of warning before password expires	: 7
+[root@localhost ~]# chage -E 2024-10-31 appadmin3
+[root@localhost ~]# chage -E 2024-10-31 appadmin2
+[root@localhost ~]# chage -l appadmin2
+Last password change					: May 09, 2024
+Password expires					: Jun 09, 2024
+Password inactive					: never
+Account expires						: Oct 31, 2024
+Minimum number of days between password change		: 0
+Maximum number of days between password change		: 31
+Number of days of warning before password expires	: 7
+[root@localhost ~]# chage -l appadmin3
+Last password change					: May 09, 2024
+Password expires					: Jun 09, 2024
+Password inactive					: never
+Account expires						: Oct 31, 2024
+Minimum number of days between password change		: 0
+Maximum number of days between password change		: 31
+Number of days of warning before password expires	: 7
+[root@localhost ~]# passwd appadmin1
+Changing password for user appadmin1.
+New password: 
+Retype new password: 
+passwd: all authentication tokens updated successfully.
+[root@localhost ~]# passwd appadmin2
+Changing password for user appadmin2.
+New password: 
+Retype new password: 
+passwd: all authentication tokens updated successfully.
+[root@localhost ~]# passwd appadmin3
+Changing password for user appadmin3.
+New password: 
+Retype new password: 
+passwd: all authentication tokens updated successfully.
+[root@localhost ~]# passwd -e appadmin1
+Expiring password for user appadmin1.
+passwd: Success
+[root@localhost ~]# passwd -e appadmin2
+Expiring password for user appadmin2.
+passwd: Success
+[root@localhost ~]# passwd -e appadmin3
+Expiring password for user appadmin3.
+passwd: Success
+[root@localhost ~]# mkdir -p /project/24ims2734
+[root@localhost ~]# setfacl -m g:applicationgrp:r-x /application
+[root@localhost ~]# getfacl /application
+getfacl: Removing leading '/' from absolute path names
+# file: application
+# owner: root
+# group: root
+user::rwx
+group::r-x
+group:applicationgrp:r-x
+mask::r-x
+other::r-x
+
+[root@localhost ~]# setfacl -m g:databasegrp:r-x /database
+[root@localhost ~]# getfacl /database
+getfacl: Removing leading '/' from absolute path names
+# file: database
+# owner: root
+# group: root
+user::rwx
+group::r-x
+group:databasegrp:r-x
+mask::r-x
+other::r-x
+
+[root@localhost ~]# groupadd servergrp
+[root@localhost ~]# useradd vk1
+useradd: user 'vk1' already exists
+[root@localhost ~]# useradd mvk1
+[root@localhost ~]# useradd mvk2
+[root@localhost ~]# useradd mvk3
+[root@localhost ~]# usermod -aG servergrp mvk1
+[root@localhost ~]# usermod -aG servergrp mvk2
+[root@localhost ~]# usermod -aG servergrp mvk3
+[root@localhost ~]# mkdir /server
+[root@localhost ~]# setfacl -m g:servergrp:r-x /server
+[root@localhost ~]# getfacl /server
+getfacl: Removing leading '/' from absolute path names
+# file: server
+# owner: root
+# group: root
+user::r--
+group::r--
+group:servergrp:r-x
+mask::r-x
+other::---
+
+[root@localhost ~]# setfacl -b /server
+[root@localhost ~]# setfacl -b /application
+[root@localhost ~]# setfacl -b /database
+[root@localhost ~]# getfacl /server
+getfacl: Removing leading '/' from absolute path names
+# file: server
+# owner: root
+# group: root
+user::r--
+group::r--
+other::---
+
+[root@localhost ~]# setfacl -m g:servergrp:r-x /project
+[root@localhost ~]# setfacl -m g:servergrp:r-x /project/24ims2734
+[root@localhost ~]# setfacl -m g:applicationgrp:r-x /project/24ims2734
+[root@localhost ~]# setfacl -m g:applicationgrp:r-x /project
+[root@localhost ~]# setfacl -m g:databasegrp:r-x /project
+[root@localhost ~]# setfacl -m g:databasegrp:r-x /project/24ims2734
+[root@localhost ~]# chmod -R g+t /project
+[root@localhost ~]# ls -ld /project
+drwxr-xr-x+ 3 root root 23 May  9 03:35 /project
+[root@localhost ~]# chmod -R 3750 /project
+[root@localhost ~]# ls -ld /project
+drwxr-s--T+ 3 root root 23 May  9 03:35 /project
+[root@localhost ~]# chmod -R 3750 /project/24ims2734
+[root@localhost ~]# ls -ld /project
+drwxr-s--T+ 3 root root 23 May  9 03:35 /project
+[root@localhost ~]# chmod -R 3750 /project/24ims2734
+[root@localhost ~]# ls -ld /project/24ims2734
+drwxr-s--T+ 2 root root 6 May  9 03:35 /project/24ims2734
+[root@localhost ~]# cd /database
+[root@localhost database]# touch prod.txt
+[root@localhost database]# ls
+prod.txt
+[root@localhost database]# 
+logout
+[vk@localhost ~]$ su
+Password: 
+[root@localhost vk]# cd
+[root@localhost ~]# cp database/prod.txt /project/24ims2734
+cp: cannot stat 'database/prod.txt': No such file or directory
+[root@localhost ~]# cp /database/prod.txt /project/24ims2734
+[root@localhost ~]# cd /project
+[root@localhost project]# touch app.prod.txt
+[root@localhost project]# ls
+24ims2734  app.prod.txt
+[root@localhost project]# ^C
+[root@localhost project]# cd ..
+[root@localhost /]# cd 
+[root@localhost ~]# usermod -l mvk3 0675
+usermod: user '0675' does not exist
+[root@localhost ~]# usermod --
+Usage: usermod [options] LOGIN
+
+Options:
+  -b, --badname                 allow bad names
+  -c, --comment COMMENT         new value of the GECOS field
+  -d, --home HOME_DIR           new home directory for the user account
+  -e, --expiredate EXPIRE_DATE  set account expiration date to EXPIRE_DATE
+  -f, --inactive INACTIVE       set password inactive after expiration
+                                to INACTIVE
+  -g, --gid GROUP               force use GROUP as new primary group
+  -G, --groups GROUPS           new list of supplementary GROUPS
+  -a, --append                  append the user to the supplemental GROUPS
+                                mentioned by the -G option without removing
+                                the user from other groups
+  -h, --help                    display this help message and exit
+  -l, --login NEW_LOGIN         new value of the login name
+  -L, --lock                    lock the user account
+  -m, --move-home               move contents of the home directory to the
+                                new location (use only with -d)
+  -o, --non-unique              allow using duplicate (non-unique) UID
+  -p, --password PASSWORD       use encrypted password for the new password
+  -R, --root CHROOT_DIR         directory to chroot into
+  -P, --prefix PREFIX_DIR       prefix directory where are located the /etc/* files
+  -s, --shell SHELL             new login shell for the user account
+  -u, --uid UID                 new UID for the user account
+  -U, --unlock                  unlock the user account
+  -v, --add-subuids FIRST-LAST  add range of subordinate uids
+  -V, --del-subuids FIRST-LAST  remove range of subordinate uids
+  -w, --add-subgids FIRST-LAST  add range of subordinate gids
+  -W, --del-subgids FIRST-LAST  remove range of subordinate gids
+  -Z, --selinux-user SEUSER     new SELinux user mapping for the user account
+
+[root@localhost ~]# usermod -l 0675 mvk3
+usermod: invalid user name '0675'
+[root@localhost ~]# usermod -l mvk3 0675
+usermod: user '0675' does not exist
+[root@localhost ~]# tail -25 /etc/group
+harry:x:9056:
+natasha:x:9057:
+sarah:x:9058:
+alies:x:1326:
+manager:x:35023:Harry,Natasha
+Natasha:x:9059:
+Harry:x:9060:
+Sarah:x:9061:
+gold:x:9062:
+ben:x:9063:
+vk1:x:9064:
+vk2:x:9065:
+vk3:x:9066:
+databasegrp:x:35024:dbadmin1,dbadmin2,dbadmin3
+dbadmin1:x:9067:
+dbadmin2:x:9068:
+dbadmin3:x:9069:
+applicationgrp:x:35025:appadmin1,appadmin2,appadmin3
+appadmin1:x:9070:
+appadmin2:x:9071:
+appadmin3:x:9072:
+servergrp:x:35026:mvk1,mvk2,mvk3
+mvk1:x:9073:
+mvk2:x:9074:
+mvk3:x:9075:
+[root@localhost ~]# usermod -l mvk3 0675u3
+usermod: user '0675u3' does not exist
+[root@localhost ~]# usermod -l 0675u3 mvk3
+[root@localhost ~]# tail -25 /etc/group
+harry:x:9056:
+natasha:x:9057:
+sarah:x:9058:
+alies:x:1326:
+manager:x:35023:Harry,Natasha
+Natasha:x:9059:
+Harry:x:9060:
+Sarah:x:9061:
+gold:x:9062:
+ben:x:9063:
+vk1:x:9064:
+vk2:x:9065:
+vk3:x:9066:
+databasegrp:x:35024:dbadmin1,dbadmin2,dbadmin3
+dbadmin1:x:9067:
+dbadmin2:x:9068:
+dbadmin3:x:9069:
+applicationgrp:x:35025:appadmin1,appadmin2,appadmin3
+appadmin1:x:9070:
+appadmin2:x:9071:
+appadmin3:x:9072:
+servergrp:x:35026:mvk1,mvk2,0675u3
+mvk1:x:9073:
+mvk2:x:9074:
+mvk3:x:9075:
+[root@localhost ~]# groupmod -l applicationgrp appgrp
+groupmod: invalid option -- 'l'
+Usage: groupmod [options] GROUP
+
+Options:
+  -a, --append                  append the users mentioned by -U option to the group 
+                                without removing existing user members
+  -g, --gid GID                 change the group ID to GID
+  -h, --help                    display this help message and exit
+  -n, --new-name NEW_GROUP      change the name to NEW_GROUP
+  -o, --non-unique              allow to use a duplicate (non-unique) GID
+  -p, --password PASSWORD       change the password to this (encrypted)
+                                PASSWORD
+  -R, --root CHROOT_DIR         directory to chroot into
+  -P, --prefix PREFIX_DIR       prefix directory where are located the /etc/* files
+  -U, --users USERS             list of user members of this group
+
+[root@localhost ~]# groupmod -n applicationgrp appgrp
+groupmod: group 'appgrp' does not exist
+[root@localhost ~]# lsblk
+NAME              MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
+sr0                11:0    1  9.1G  0 rom  /run/media/vk/CentOS-Stream-9-BaseOS-x86_64
+nvme0n1           259:0    0   25G  0 disk 
+├─nvme0n1p1       259:1    0    1G  0 part /boot
+├─nvme0n1p2       259:2    0    4G  0 part [SWAP]
+└─nvme0n1p3       259:3    0   20G  0 part /
+nvme0n2           259:4    0   15G  0 disk 
+├─ims-database    253:0    0    5G  0 lvm  /database
+├─ims-application 253:1    0    5G  0 lvm  /application
+└─ims-project     253:2    0    2G  0 lvm  /project
+[root@localhost ~]# groupmod -n  appgrp applicationgrp
+[root@localhost ~]# tail -25 /etc/group
+harry:x:9056:
+natasha:x:9057:
+sarah:x:9058:
+alies:x:1326:
+manager:x:35023:Harry,Natasha
+Natasha:x:9059:
+Harry:x:9060:
+Sarah:x:9061:
+gold:x:9062:
+ben:x:9063:
+vk1:x:9064:
+vk2:x:9065:
+vk3:x:9066:
+databasegrp:x:35024:dbadmin1,dbadmin2,dbadmin3
+dbadmin1:x:9067:
+dbadmin2:x:9068:
+dbadmin3:x:9069:
+appadmin1:x:9070:
+appadmin2:x:9071:
+appadmin3:x:9072:
+servergrp:x:35026:mvk1,mvk2,0675u3
+mvk1:x:9073:
+mvk2:x:9074:
+mvk3:x:9075:
+appgrp:x:35025:appadmin1,appadmin2,appadmin3
+[root@localhost ~]# history 
+    1  lsblk
+    2  pvcreate /dev/nvme0n2,/dev/nvme0n2
+    3  pvcreate /dev/nvme0n2
+    4  pvs
+    5  vgcreate ims /dev/nvme0n2
+    6  lvcreate -n database -L 5G ims
+    7  lvcreate -n application -L 5G ims
+    8  lvcreate -n project -L 2G ims
+    9  ls /dev/mapper/ims-database
+   10  ls /dev/mapper/ims-application
+   11  ls /dev/mapper/ims-project
+   12  vgs
+   13  pvs
+   14  mkfs.xfs /dev/mapper/ims-database
+   15  mount /dev/mapper/ims-database /mnt
+   16  mount /dev/mapper/ims-application /mnt
+   17  unmount /dev/mapper/ims-database /mnt
+   18  unmount /dev/ims-database /mnt
+   19  unmount database /mnt
+   20  unmount /mnt
+   21  umount /dev/mapper/ims-database 
+   22  mkdir /database
+   23  mkdir /application
+   24  mkdir /project
+   25  mount /dev/mapper/ims-database /database
+   26  mount /dev/mapper/ims-application /application
+   27  mount /dev/mapper/ims-project /project
+   28  mkdir /Application
+   29  mkdir /Project
+   30  rmdir Application
+   31  rmkdir Application
+   32  rm-rf Application
+   33  rmdir Application
+   34  rmdir /Application
+   35  rmdir /Project
+   36  mkfs.xfs /dev/mapper/ims-application
+   37  mkfs.xfs /dev/mapper/ims-project
+   38  mount /dev/mapper/ims-application /application
+   39  mount /dev/mapper/ims-project /project
+   40  lsblk
+   41  useradd vk1
+   42  useradd vk2
+   43  useradd vk3
+   44  vim /etc/login.defs
+   45  umask
+   46  su vk1
+   47  groupadd databasegrp
+   48  useradd mv1
+   49  useradd mv2
+   50  useradd mv3
+   51  usermod -aG mv1 databasegrp
+   52  usermod -aG databasegrp mv1
+   53  usermod -aG databasegrp mv2
+   54  usermod -aG databasegrp mv3
+   55  tail -25 /etc/group
+   56  chage -l
+   57  userdel mv1
+   58  userdel mv2
+   59  userdel mv3
+   60  tail -25 /etc/group
+   61  useradd dbadmin1
+   62  useradd dbadmin2
+   63  useradd dbadmin3
+   64  usermod -aG databasegrp dbadmin1
+   65  usermod -aG databasegrp dbadmin2
+   66  usermod -aG databasegrp dbadmin3
+   67  tail -25 /etc/group
+   68  chage -E 2024-08-31
+   69  chage -E 2024-08-31 dbadmin1
+   70  chage -M 30 dbadmin1
+   71  chage -l dbadmin1
+   72  chage -M 30 dbadmin2
+   73  chage -E 2024-08-31 dbadmin2
+   74  chage -l dbadmin2
+   75  chage -E 2024-08-31 dbadmin3
+   76  chage -l dbadmin3
+   77  groupadd applicationgrp
+   78  useradd appadmin1
+   79  useradd appadmin2
+   80  useradd appadmin3
+   81  usermod -aG applicationgrp appadmin1
+   82  usermod -aG applicationgrp appadmin2
+   83  usermod -aG applicationgrp appadmin3
+   84  tail -25 /etc/group
+   85  chage -l appadmin1
+   86  chage -E 2024-08-31 appadmin2
+   87  chage -E 2024-08-31 appadmin3
+   88  chage -M 31 appadmin1
+   89  chage -M 31 appadmin2
+   90  chage -M 31 appadmin3
+   91  chage -l appadmin1
+   92  chage -l appadmin2
+   93  chage -l appadmin3
+   94  chage -E 2024-10-31 appadmin3
+   95  chage -E 2024-10-31 appadmin2
+   96  chage -l appadmin2
+   97  chage -l appadmin3
+   98  passwd appadmin1
+   99  passwd appadmin2
+  100  passwd appadmin3
+  101  passwd -e appadmin1
+  102  passwd -e appadmin2
+  103  passwd -e appadmin3
+  104  mkdir -p /project/24ims2734
+  105  setfacl -m g:applicationgrp:r-x /application
+  106  getfacl /application
+  107  setfacl -m g:databasegrp:r-x /database
+  108  getfacl /database
+  109  groupadd servergrp
+  110  useradd vk1
+  111  useradd mvk1
+  112  useradd mvk2
+  113  useradd mvk3
+  114  usermod -aG servergrp mvk1
+  115  usermod -aG servergrp mvk2
+  116  usermod -aG servergrp mvk3
+  117  mkdir /server
+  118  setfacl -m g:servergrp:r-x /server
+  119  getfacl /server
+  120  setfacl -b /server
+  121  setfacl -b /application
+  122  setfacl -b /database
+  123  getfacl /server
+  124  setfacl -m g:servergrp:r-x /project
+  125  setfacl -m g:servergrp:r-x /project/24ims2734
+  126  setfacl -m g:applicationgrp:r-x /project/24ims2734
+  127  setfacl -m g:applicationgrp:r-x /project
+  128  setfacl -m g:databasegrp:r-x /project
+  129  setfacl -m g:databasegrp:r-x /project/24ims2734
+  130  chmod -R g+t /project
+  131  ls -ld /project
+  132  chmod -R 3750 /project
+  133  ls -ld /project
+  134  chmod -R 3750 /project/24ims2734
+  135  ls -ld /project
+  136  chmod -R 3750 /project/24ims2734
+  137  ls -ld /project/24ims2734
+  138  cd /database
+  139  touch prod.txt
+  140  ls
+  141  cd
+  142  cp database/prod.txt /project/24ims2734
+  143  cp /database/prod.txt /project/24ims2734
+  144  cd /project
+  145  touch app.prod.txt
+  146  ls
+  147  cd ..
+  148  cd 
+  149  usermod -l mvk3 0675
+  150  usermod --
+  151  usermod -l 0675 mvk3
+  152  usermod -l mvk3 0675
+  153  tail -25 /etc/group
+  154  usermod -l mvk3 0675u3
+  155  usermod -l 0675u3 mvk3
+  156  tail -25 /etc/group
+  157  groupmod -l applicationgrp appgrp
+  158  groupmod -n applicationgrp appgrp
+  159  lsblk
+  160  groupmod -n  appgrp applicationgrp
+  161  tail -25 /etc/group
+  162  history 
+[root@localhost ~]# 
